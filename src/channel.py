@@ -13,6 +13,12 @@ class Channel:
         self.channel = self.youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
 
         self.channel_info = self.get_channel_info()
+        self.title = self.get_channel_info()["Название канала"]
+        self.description = self.get_channel_info()['Описание канала']
+        self.subscriber_count = self.get_channel_info()['Количество подписчиков']
+        self.view_count = self.get_channel_info()['Общее количество просмотров']
+        self.video_count = self.channel['items'][0]['statistics']['videoCount']
+        self.url = self.get_channel_info()['Ссылка на канал']
 
     @classmethod
     def get_service(cls):
