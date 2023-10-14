@@ -61,3 +61,39 @@ class Channel:
         if self.channel_info:
             with open(filename, 'w', encoding='utf-8') as file:
                 json.dump(self.channel_info, file, ensure_ascii=False, indent=2)
+
+    def __str__(self):
+        """Возвращающий название и ссылку на канал по шаблону - <название_канала> (<ссылка_на_канал>)"""
+        return f'{self.title}: ({self.url})'
+
+    def __add__(self, other):
+        """Метод складывания двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) + int(other.subscriber_count)
+
+    def __sub__(self, other):
+        """Метод вычитание двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) - int(other.subscriber_count)
+
+    def __eq__(self, other):
+        """Метод сравнение (равенства ==) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) == int(other.subscriber_count)
+
+    def __ne__(self, other):
+        """Метод сравнение (неравенства) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) != int(other.subscriber_count)
+
+    def __lt__(self, other):
+        """Метод сравнение (оператора меньше) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) < int(other.subscriber_count)
+
+    def __le__(self, other):
+        """Метод сравнение (оператора меньше или равно) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) <= int(other.subscriber_count)
+
+    def __gt__(self, other):
+        """Метод сравнение (оператора больше) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) > int(other.subscriber_count)
+
+    def __ge__(self, other):
+        """Метод сравнение (оператора больше или равно) двух каналов между собой по количеству подписчиков"""
+        return int(self.subscriber_count) >= int(other.subscriber_count)
