@@ -8,17 +8,17 @@ class Channel:
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
-        self.youtube = build('youtube', 'v3', developerKey=os.getenv('YT_API_KEY'))
+        # self.youtube = build('youtube', 'v3', developerKey=os.getenv('YT_API_KEY'))
         self.channel_id = channel_id
-        self.channel = self.youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
+        self.channel = self.get_service().channels().list(id=self.channel_id, part='snippet,statistics').execute()
 
         self.channel_info = self.get_channel_info()
-        self.title = self.get_channel_info()["Название канала"]
-        self.description = self.get_channel_info()['Описание канала']
-        self.subscriber_count = self.get_channel_info()['Количество подписчиков']
-        self.view_count = self.get_channel_info()['Общее количество просмотров']
+        self.title = self.channel_info["Название канала"]
+        self.description = self.channel_info['Описание канала']
+        self.subscriber_count = self.channel_info['Количество подписчиков']
+        self.view_count = self.channel_info['Общее количество просмотров']
         self.video_count = self.channel['items'][0]['statistics']['videoCount']
-        self.url = self.get_channel_info()['Ссылка на канал']
+        self.url = self.channel_info['Ссылка на канал']
 
     @classmethod
     def get_service(cls):
@@ -28,8 +28,7 @@ class Channel:
 
     def get_channel_info(self):
         """Собирает информацию о канале"""
-        youtube = self.get_service()
-        response = youtube.channels().list(part='snippet,statistics', id=self.channel_id).execute()
+        response = self.get_service().channels().list(part='snippet,statistics', id=self.channel_id).execute()
         if 'items' in response:
             channel_data = response['items'][0]
             snippet = channel_data['snippet']

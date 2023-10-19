@@ -1,5 +1,6 @@
 import os
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 
 class APIKEY:
@@ -18,16 +19,33 @@ class Video(APIKEY):
         self.url_video = ""
         self.video_view = None
         self.video_like = None
+        self._init_from_api()
 
-        self.request = self.get_service().videos().list(part="snippet,statistics", id=self.video_id)
-        response = self.request.execute()
+    def _init_from_api(self):
+        youtube = self.get_service()
 
-        if response['items']:
-            video_data = response['items'][0]
-            self.name_video = video_data['snippet']['title']
-            self.url = f"https://www.youtube.com/watch?v={self.video_id}"
-            self.video_view = int(video_data['statistics']['viewCount'])
-            self.video_like = int(video_data['statistics']['likeCount'])
+        try:
+            video = youtube.videos().list(id=self.video_id, part='snippet,statistics').execute()
+
+            if 'items' in video and video['items']:
+                snippet = video['items'][0]['snippet']
+                statistics = video['items'][0]['statistics']
+
+                self.title = snippet['title']
+                self.url = f'https://youtu.be/{self.video_id}'
+                self.view_count = statistics['viewCount']
+                self.like_count = statistics['likeCount']
+            else:
+                self.title = None
+                self.url = None
+                self.view_count = None
+                self.like_count = None
+
+        except HttpError:
+            self.title = None
+            self.url = None
+            self.view_count = None
+            self.like_count = None
 
     def __str__(self):
         return self.name_video
